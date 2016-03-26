@@ -13,7 +13,7 @@ model{
 
     }
     android.ndk {
-        moduleName = "hello"
+        moduleName = "ImgFun"
         /*
          * Other ndk flags configurable here are
          * cppFlags.add("-fno-rtti")
