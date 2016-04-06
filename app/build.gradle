@@ -1,64 +1,68 @@
 apply plugin: 'com.android.model.application'
 
-model{
-    android {
-        compileSdkVersion =23
-        buildToolsVersion ="23.0.2"
+model {
+        android {
+            compileSdkVersion 23
+            buildToolsVersion "23.0.2"
 
-        defaultConfig.with {
-            applicationId = "com.example.chanst.ndkdemo"
-            minSdkVersion.apiLevel = 21
-            targetSdkVersion.apiLevel = 23
+            defaultConfig {
+                applicationId "com.example.chanst.ndkdemo"
+                minSdkVersion.apiLevel 21
+                targetSdkVersion.apiLevel 23
+                versionCode 1
+                versionName "1.0"
+            }
+
+            buildTypes {
+                release {
+                    minifyEnabled true
+                    debuggable false
+                    proguardFiles.add(file('proguard-rules.pro'))
+                }
+                debug {
+                    minifyEnabled false
+                    debuggable true
+                    useProguard false
+                }
         }
 
-    }
-    android.ndk {
-        moduleName = "ImgFun"
-        /*
-         * Other ndk flags configurable here are
-         * cppFlags.add("-fno-rtti")
-         * cppFlags.add("-fno-exceptions")
-         * ldLibs.addAll(["android", "log"])
-         * stl       = "system"
-         */
-    }
-    android.buildTypes {
-        release {
-            minifyEnabled = false
-            proguardFiles.add(file('proguard-rules.txt'))
+        productFlavors {
+            create("arm") {
+                ndk {
+                    abiFilters.add("armeabi-v7a")
+                    ldFlags.add("-L/home/chanst/OpenCV-android-sdk/sdk/native/libs/armeabi-v7a".toString())
+                    ldFlags.add("-L/home/chanst/OpenCV-android-sdk/sdk/native/3rdparty/libs/armeabi-v7a".toString())
+                }
+            }
+            create("arm64") {
+                ndk {
+                    abiFilters.add("arm64-v8a")
+                    ldFlags.add("-L/home/chanst/OpenCV-android-sdk/sdk/native/libs/arm64-v8a".toString())
+                    ldFlags.add("-L/home/chanst/OpenCV-android-sdk/sdk/native/3rdparty/libs/arm64-v8a".toString())
+                }
+            }
         }
-    }
-    android.productFlavors {
-        // for detailed abiFilter descriptions, refer to "Supported ABIs" @
-        // https://developer.android.com/ndk/guides/abis.html#sa
-        create("arm") {
-            ndk.abiFilters.add("armeabi")
+
+        ndk {
+            moduleName = "ImgFun"
+            cppFlags.addAll(["-std=c++11", "-frtti", "-fexceptions"])
+            cppFlags.add("-I/home/chanst/OpenCV-android-sdk/sdk/native/jni/include".toString())
+            ldLibs.addAll(["log", "android", "z", "dl", "m", "GLESv2", "EGL"])
+            ldLibs.addAll([
+                    "opencv_features2d",
+                    "opencv_flann",
+                    "opencv_imgproc",
+                    "opencv_core",
+                    "tbb"
+            ])
+            stl = "gnustl_shared"
         }
-        create("arm7") {
-            ndk.abiFilters.add("armeabi-v7a")
-        }
-        create("arm8") {
-            ndk.abiFilters.add("arm64-v8a")
-        }
-        create("x86") {
-            ndk.abiFilters.add("x86")
-        }
-        create("x86-64") {
-            ndk.abiFilters.add("x86_64")
-        }
-        create("mips") {
-            ndk.abiFilters.add("mips")
-        }
-        create("mips-64") {
-            ndk.abiFilters.add("mips64")
-        }
-        // To include all cpu architectures, leaves abiFilters empty
-        create("all")
     }
 
 }
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:appcompat-v7:23.2.1'
+    testCompile 'junit:junit:4.12'
+    compile 'com.android.support:appcompat-v7:23.2.0'
 }

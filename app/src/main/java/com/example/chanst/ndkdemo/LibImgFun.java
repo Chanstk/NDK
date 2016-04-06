@@ -8,8 +8,8 @@ public class LibImgFun {
         System.loadLibrary("ImgFun");
     }
     /**
-     * @param width the current view width
-     * @param height the current view height
+     * @param w the current view width
+     * @param h the current view height
      */
     public static native int[] ImgFun(int[] buf, int w, int h);
 }
